@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name="Books")
@@ -12,6 +13,7 @@ public class Book {
 	@GeneratedValue
 	private long id;
 	
+	@NotNull
 	private String title;
 
 	public long getId() {

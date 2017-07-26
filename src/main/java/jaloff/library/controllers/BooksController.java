@@ -12,13 +12,13 @@ import jaloff.library.repositories.BooksRepository;
 
 @RestController
 @RequestMapping("/books")
-public class BooksControler {
+public class BooksController {
 
 	@Autowired
 	private BooksRepository booksRepo;
 	
 	@GetMapping
-	public Collection<Book> books(){
+	public Collection<Book> findBooks(){
 		return booksRepo.findAll();
 	}
 }
