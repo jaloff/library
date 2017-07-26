@@ -35,18 +35,14 @@ public class BooksControllerTest {
 
 	private List<Book> books;
 	private static final MediaType MEDIA_TYPE = MediaType.APPLICATION_JSON_UTF8;
+	private static final Book BOOK_1 = new Book(1L, "Diune");
+	private static final Book BOOK_2 = new Book(1L, "American Assassin");
 	
 	@Before
 	public void setUp() throws Exception {
 		books = new ArrayList<>();
-		Book book = new Book();
-		book.setId(1L);
-		book.setTitle("Diune");
-		books.add(book);
-		book = new Book();
-		book.setId(2L);
-		book.setTitle("John Nick");
-		books.add(book);
+		books.add(BOOK_1);
+		books.add(BOOK_2);
 	}
 
 	@Test
@@ -69,26 +65,29 @@ public class BooksControllerTest {
 	
 	@Test
 	public void shouldReturnBookById() throws Exception {
-		when(booksRepo.findById(books.get(0).getId())).thenReturn(Optional.of(books.get(0)));
-		RequestBuilder rb = get("/books/{id}", books.get(0).getId())
+		int id = (int)BOOK_1.getId();
+		String title = BOOK_1.getTitle();
+		when(booksRepo.findById(id)).thenReturn(Optional.of(BOOK_1));
+		RequestBuilder rb = get("/books/{id}", id)
 					.accept(MEDIA_TYPE);
 		mockMvc.perform(rb).andExpect(status().isOk())
-			.andExpect(jsonPath("$.id", is((int)books.get(0).getId())))
-			.andExpect(jsonPath("$.title", is(books.get(0).getTitle())));
+			.andExpect(jsonPath("$.id", is(id)))
+			.andExpect(jsonPath("$.title", is(title)));
 		
-		verify(booksRepo, times(1)).findById(1L);
+		verify(booksRepo, times(1)).findById(id);
 		verifyNoMoreInteractions(booksRepo);
 	}
 	
 	@Test
 	public void shouldReturn404CodeWhenNotFoundById() throws Exception {
-		when(booksRepo.findById(1L)).thenReturn(Optional.empty());
-		RequestBuilder rb = get("/books/{id}", 1L)
+		long id = 0L;
+		when(booksRepo.findById(id)).thenReturn(Optional.empty());
+		RequestBuilder rb = get("/books/{id}", id)
 			.accept(MEDIA_TYPE);
 		
 		mockMvc.perform(rb).andExpect(status().isNotFound());
 		
-		verify(booksRepo, times(1)).findById(1L);
+		verify(booksRepo, times(1)).findById(id);
 		verifyNoMoreInteractions(booksRepo);
 	}
 }
