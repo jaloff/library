@@ -10,11 +10,13 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 
+import jaloff.library.config.SecurityConfig;
 import jaloff.library.entities.Book;
 import jaloff.library.repositories.BooksRepository;
 
@@ -24,9 +26,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.hamcrest.Matchers.*;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(value = BooksController.class, secure = false)
+@WebMvcTest(value = BooksController.class)
+@Import(SecurityConfig.class)
 public class BooksControllerTest {
-	
 	@Autowired
 	private MockMvc mockMvc;
 	
@@ -79,7 +81,7 @@ public class BooksControllerTest {
 	}
 	
 	@Test
-	public void shouldReturn404CodeWhenNotFoundById() throws Exception {
+	public void shouldReturn404CodeWhenBookNotFoundById() throws Exception {
 		long id = 0L;
 		when(booksRepo.findById(id)).thenReturn(Optional.empty());
 		RequestBuilder rb = get("/books/{id}", id)
