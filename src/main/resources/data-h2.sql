@@ -1,0 +1,1 @@
+INSERT INTO Books(title) VALUES('Diuna');
