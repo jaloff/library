@@ -2,6 +2,7 @@ package jaloff.library.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -63,6 +64,31 @@ public class BooksControllerTest {
 			.andExpect(jsonPath("$[1].title", is(books.get(1).getTitle())));
 		
 		verify(booksRepo, times(1)).findAll();
+		verifyNoMoreInteractions(booksRepo);
+	}
+	
+	@Test
+	public void shouldReturnBookById() throws Exception {
+		when(booksRepo.findById(books.get(0).getId())).thenReturn(Optional.of(books.get(0)));
+		RequestBuilder rb = get("/books/{id}", books.get(0).getId())
+					.accept(MEDIA_TYPE);
+		mockMvc.perform(rb).andExpect(status().isOk())
+			.andExpect(jsonPath("$.id", is((int)books.get(0).getId())))
+			.andExpect(jsonPath("$.title", is(books.get(0).getTitle())));
+		
+		verify(booksRepo, times(1)).findById(1L);
+		verifyNoMoreInteractions(booksRepo);
+	}
+	
+	@Test
+	public void shouldReturn404CodeWhenNotFoundById() throws Exception {
+		when(booksRepo.findById(1L)).thenReturn(Optional.empty());
+		RequestBuilder rb = get("/books/{id}", 1L)
+			.accept(MEDIA_TYPE);
+		
+		mockMvc.perform(rb).andExpect(status().isNotFound());
+		
+		verify(booksRepo, times(1)).findById(1L);
 		verifyNoMoreInteractions(booksRepo);
 	}
 }
