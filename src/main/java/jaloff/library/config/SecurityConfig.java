@@ -1,6 +1,7 @@
 package jaloff.library.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -13,7 +14,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests()
-			.antMatchers("/**")
+			.antMatchers(HttpMethod.DELETE, "/books/*")
+			.hasRole("ADMIN")
+			.antMatchers(HttpMethod.POST, "/books")
+			.hasRole("ADMIN")
+			.antMatchers(HttpMethod.PUT, "/books")
+			.hasRole("ADMIN")
+			.antMatchers(HttpMethod.GET, "/books/*")
 			.permitAll();
 		http
 			.csrf()
