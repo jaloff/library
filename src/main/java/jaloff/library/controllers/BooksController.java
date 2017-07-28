@@ -39,6 +39,7 @@ public class BooksController {
 		booksRepo.delete(id);
 	}
 	
+	// TODO Fix it for creation only - current this method also allow to update book
 	@PostMapping
 	public Book createBook(@RequestBody Book book) {
 		return booksRepo.save(book);

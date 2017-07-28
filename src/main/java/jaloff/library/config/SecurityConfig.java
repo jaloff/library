@@ -14,14 +14,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests()
-			.antMatchers(HttpMethod.DELETE, "/books/*")
-			.hasRole("ADMIN")
-			.antMatchers(HttpMethod.POST, "/books")
-			.hasRole("ADMIN")
-			.antMatchers(HttpMethod.PUT, "/books")
-			.hasRole("ADMIN")
-			.antMatchers(HttpMethod.GET, "/books/*")
-			.permitAll();
+				.antMatchers(HttpMethod.DELETE, "/books/*")
+				.hasRole("ADMIN")
+				.antMatchers(HttpMethod.POST, "/books")
+				.hasRole("ADMIN")
+				.antMatchers(HttpMethod.PUT, "/books")
+				.hasRole("ADMIN")
+			.and()
+				.authorizeRequests()
+				.antMatchers("/users", "/users/*")
+				.hasRole("ADMIN")
+			.and()
+				.authorizeRequests()
+				.antMatchers(HttpMethod.GET, "/books", "/books/*")
+				.permitAll()
+			.and()
+				.authorizeRequests()
+				.anyRequest()
+				.denyAll();
 		http
 			.csrf()
 			.disable();

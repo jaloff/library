@@ -5,6 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name="Users")
 public class User {
@@ -14,10 +16,11 @@ public class User {
 	
 	private String firstName;
 	
-	private String secondName;
+	private String lastName;
 	
 	private String email;
 	
+	@JsonIgnore
 	private String password;
 
 	public long getId() {
@@ -36,12 +39,12 @@ public class User {
 		this.firstName = firstName;
 	}
 
-	public String getSecondName() {
-		return secondName;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public void setSecondName(String secondName) {
-		this.secondName = secondName;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public String getEmail() {
@@ -61,5 +64,14 @@ public class User {
 	}
 
 	public User() {
+	}
+	
+	public User(long id, String firstName, String lastName, String email, String password) {
+		super();
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.password = password;
 	}
 }
