@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jaloff.library.config.SecurityConfig;
 import jaloff.library.entities.Book;
-import jaloff.library.repositories.BooksRepository;
+import jaloff.library.repositories.BookRepository;
 import jaloff.library.utils.WithMockAdmin;
 
 import static org.mockito.Mockito.*;
@@ -31,14 +31,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.hamcrest.Matchers.*;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(value = BooksController.class)
+@WebMvcTest(value = BookController.class)
 @Import(SecurityConfig.class)
-public class BooksControllerTest {
+public class BookControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 	
 	@MockBean
-	private BooksRepository booksRepo;
+	private BookRepository booksRepo;
 
 	@Autowired
 	private ObjectMapper objMapper; 
@@ -66,9 +66,9 @@ public class BooksControllerTest {
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(MEDIA_TYPE))
 			.andExpect(jsonPath("$", hasSize(books.size())))
-			.andExpect(jsonPath("$[0].id", is((int)books.get(0).getId())))
+			.andExpect(jsonPath("$[0].id", is(books.get(0).getId().intValue())))
 			.andExpect(jsonPath("$[0].title", is(books.get(0).getTitle())))
-			.andExpect(jsonPath("$[1].id", is((int)books.get(1).getId())))
+			.andExpect(jsonPath("$[1].id", is(books.get(1).getId().intValue())))
 			.andExpect(jsonPath("$[1].title", is(books.get(1).getTitle())));
 		
 		verify(booksRepo, times(1)).findAll();

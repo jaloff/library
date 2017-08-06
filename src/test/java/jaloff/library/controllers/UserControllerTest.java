@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jaloff.library.config.SecurityConfig;
 import jaloff.library.entities.User;
-import jaloff.library.repositories.UsersRepository;
+import jaloff.library.repositories.UserRepository;
 import jaloff.library.utils.WithMockAdmin;
 
 import static org.mockito.Mockito.*;
@@ -30,18 +30,17 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.fail;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(value = UsersController.class)
+@WebMvcTest(value = UserController.class)
 @Import(SecurityConfig.class)
-public class UsersControllerTest {
+public class UserControllerTest {
 	
 	@Autowired
 	private MockMvc mockMvc;
 	
 	@MockBean
-	private UsersRepository usersRepo;
+	private UserRepository usersRepo;
 
 	@Autowired
 	private ObjectMapper objMapper;
@@ -51,6 +50,7 @@ public class UsersControllerTest {
 	private static final long ID = 1L;
 	private static final User USER_1 = new User(ID, "Bob", "Ross", "email@email.com", "password");
 	private static final User USER_2 = new User(2L, "Alice", "Duke", "alice@email.com", "password");
+	private static final User NOT_VALID_USER = new User(1L, "", null, "", ""); 
 	
 	@Before
 	public void setUp() throws Exception {
@@ -67,12 +67,12 @@ public class UsersControllerTest {
 		
 		mockMvc.perform(rb).andExpect(status().isOk())
 			.andExpect(jsonPath("$", hasSize(2)))
-			.andExpect(jsonPath("$[0].id", is((int)USER_1.getId())))
+			.andExpect(jsonPath("$[0].id", is(USER_1.getId().intValue())))
 			.andExpect(jsonPath("$[0].firstName", is(USER_1.getFirstName())))
 			.andExpect(jsonPath("$[0].lastName", is(USER_1.getLastName())))
 			.andExpect(jsonPath("$[0].email", is(USER_1.getEmail())))
 			.andExpect(jsonPath("$[0].password").doesNotExist())
-			.andExpect(jsonPath("$[1].id", is((int)USER_2.getId())))
+			.andExpect(jsonPath("$[1].id", is(USER_2.getId().intValue())))
 			.andExpect(jsonPath("$[1].firstName", is(USER_2.getFirstName())))
 			.andExpect(jsonPath("$[1].lastName", is(USER_2.getLastName())))
 			.andExpect(jsonPath("$[1].email", is(USER_2.getEmail())))
@@ -91,7 +91,7 @@ public class UsersControllerTest {
 		
 		verifyNoMoreInteractions(usersRepo);
 	}
-	
+
 	@Test
 	@WithMockAdmin
 	public void shouldReturnUserByIdForAdmin() throws Exception {
@@ -256,6 +256,32 @@ public class UsersControllerTest {
 		
 		mockMvc.perform(rb).andExpect(status().isForbidden());
 		
+		verifyNoMoreInteractions(usersRepo);
+	}
+
+	@Test
+	@WithMockAdmin
+	public void shouldReturn409WhenTryingToRegisterUserWithInvalidData() throws Exception {
+		RequestBuilder rb = post("/users")
+				.content(objMapper.writeValueAsString(NOT_VALID_USER))
+				.contentType(MEDIA_TYPE)
+				.accept(MEDIA_TYPE);
+
+		mockMvc.perform(rb).andExpect(status().isConflict());
+
+		verifyNoMoreInteractions(usersRepo);
+	}
+	
+	@Test
+	@WithMockAdmin
+	public void shouldReturn409WhenTryingToUpdateUserWithInvalidData() throws Exception {
+		RequestBuilder rb = put("/users")
+				.content(objMapper.writeValueAsString(NOT_VALID_USER))
+				.contentType(MEDIA_TYPE)
+				.accept(MEDIA_TYPE);
+
+		mockMvc.perform(rb).andExpect(status().isConflict());
+
 		verifyNoMoreInteractions(usersRepo);
 	}
 }

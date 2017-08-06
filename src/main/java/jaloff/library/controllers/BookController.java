@@ -13,46 +13,37 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jaloff.library.entities.Book;
-import jaloff.library.exceptions.BookNotFoundException;
-import jaloff.library.repositories.BooksRepository;
+import jaloff.library.services.BookService;
 
 @RestController
 @RequestMapping("/books")
-public class BooksController {
+public class BookController {
 
 	@Autowired
-	private BooksRepository booksRepo;
+	private BookService bookService;
 	
 	@GetMapping
 	public Collection<Book> findBooks(){
-		return booksRepo.findAll();
+		return bookService.getAll();
 	}
 	
 	@GetMapping("/{id}")
 	public Book findBookById(@PathVariable long id) {
-		return findBook(id);
+		return bookService.get(id);
 	}
 	
 	@DeleteMapping("/{id}")
 	public void deleteBookById(@PathVariable long id) {
-		findBook(id);
-		booksRepo.delete(id);
+		bookService.delete(id);
 	}
 	
-	// TODO Fix it for creation only - current this method also allow to update book
 	@PostMapping
 	public Book createBook(@RequestBody Book book) {
-		return booksRepo.save(book);
+		return bookService.create(book);
 	}
 	
 	@PutMapping
-	public Book updateBook(@RequestBody Book book) {
-		findBook(book.getId());
-		return booksRepo.save(book);
-	}
-	
-	public Book findBook(long id) {
-		return booksRepo.findById(id)
-				.orElseThrow(() -> new BookNotFoundException(id));
+	public void updateBook(@RequestBody Book book) {
+		bookService.update(book);
 	}
 }
