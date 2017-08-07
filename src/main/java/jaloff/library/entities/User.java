@@ -31,6 +31,9 @@ public class User {
 	
 	@JsonIgnore
 	private String password;
+	
+	@JsonIgnore
+	private String role;
 
 	public Long getId() {
 		return id;
@@ -72,6 +75,14 @@ public class User {
 		this.password = password;
 	}
 
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
 	public User() {
 	}
 	
@@ -82,5 +93,6 @@ public class User {
 		this.lastName = lastName;
 		this.email = email;
 		this.password = password;
+		this.role = Role.ROLE_USER.toString();
 	}
 }

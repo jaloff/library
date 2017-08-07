@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import jaloff.library.entities.Role;
 import jaloff.library.entities.User;
 import jaloff.library.exceptions.UserNotFoundException;
 import jaloff.library.exceptions.UserWithEmailExistException;
@@ -40,6 +41,7 @@ public class UserService {
 		}
 		
 		user.setPassword(passwordGenerator.generate());
+		user.setRole(Role.ROLE_USER.toString());
 		
 		return userRepository.save(user);
 	}
