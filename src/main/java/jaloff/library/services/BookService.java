@@ -34,14 +34,16 @@ public class BookService {
 	public void delete(long id) {
 		if(bookRepository.exists(id)) {
 			bookRepository.delete(id);
+		} else {
+			throw new BookNotFoundException(id);
 		}
-		throw new BookNotFoundException(id);
 	}
 	
 	public void update(Book book) {
 		if(bookRepository.exists(book.getId())) {
 			bookRepository.delete(book);
+		} else {
+			throw new BookNotFoundException(book.getId());
 		}
-		throw new BookNotFoundException(book.getId());
 	}
 }

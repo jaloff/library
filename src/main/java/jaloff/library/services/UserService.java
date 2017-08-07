@@ -49,15 +49,17 @@ public class UserService {
 	public void delete(long id) {
 		if(userRepository.exists(id)) {
 			userRepository.delete(id);
+		} else {
+			throw new UserNotFoundException(id);
 		}
-		throw new UserNotFoundException(id);
 	}
 
 	public void update(User user) {
 		if(userRepository.exists(user.getId())) {
 			userRepository.save(user);
+		} else {
+			throw new UserNotFoundException(user.getId());
 		}
-		throw new UserNotFoundException(user.getId());
 	}
 	
 	// TODO Encode password
@@ -67,7 +69,8 @@ public class UserService {
 		if(user.getPassword().compareTo(passwordOld) == 0) {
 			user.setPassword(passwordNew);
 			userRepository.save(user);
+		} else {
+			// TODO Throw exception
 		}
-		// TODO Throw exception
 	}
 }
