@@ -1,8 +1,12 @@
 package jaloff.library.entities;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -34,6 +38,11 @@ public class User {
 	
 	@JsonIgnore
 	private String role;
+	
+	@JsonIgnore
+	@OneToMany
+	@JoinColumn(name="userId")
+	private List<Issue> borrowings;
 
 	public Long getId() {
 		return id;
@@ -81,6 +90,14 @@ public class User {
 
 	public void setRole(String role) {
 		this.role = role;
+	}
+
+	public List<Issue> getBorrowings() {
+		return borrowings;
+	}
+
+	public void setBorrowings(List<Issue> borrowings) {
+		this.borrowings = borrowings;
 	}
 
 	public User() {
