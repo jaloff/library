@@ -24,11 +24,7 @@ public class IssueController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
 	public void issueBook(@RequestBody IssueBookRequestDto dto) {
-		issueService.issueBook(dto);
+		issueService.issueBook(dto.getUserId(), dto.getBookId());
 	}
 	
-//	@PutMapping("/{id}")
-//	public void returnBook(@PathVariable("id") long borrowingId) {
-//		issueService.returnBook(borrowingId);
-//	}
 }

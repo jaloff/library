@@ -25,16 +25,16 @@ public class IssueService {
 	private BookService bookService;
 	
 	@Transactional
-	public void issueBook(IssueBookRequestDto dto) {
-		Book book = bookService.get(dto.getBookId());
+	public void issueBook(Long userId, Long bookId) {
+		Book book = bookService.get(bookId);
 		
 		if(book.getStatus() == Book.Status.BORROWED) {
-			throw new BookAlreadyIssuedException(dto.getBookId());
+			throw new BookAlreadyIssuedException(bookId);
 		}
 		
 		book.setStatus(Book.Status.BORROWED);
 		Issue issue = new Issue();
-		issue.setUserId(dto.getUserId());
+		issue.setUserId(userId);
 		issue.setBook(book);
 		issue.setIssueDate(now());
 		issueRepository.save(issue);
