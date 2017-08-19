@@ -12,7 +12,7 @@ CREATE TABLE Users(
 	email VARCHAR(255) UNIQUE NOT NULL,
 	password VARCHAR(255) NOT NULL,
 	role VARCHAR(255) NOT NULL,
-	PRIMARY KEY(ID)
+	PRIMARY KEY(id)
 );
 
 CREATE TABLE Issues(
@@ -20,7 +20,18 @@ CREATE TABLE Issues(
 	user_id INT NOT NULL,
 	book_id INT NOT NULL,
 	issue_date DATE NOT NULL,
-	PRIMARY KEY(ID),
-	CONSTRAINT FK_UserBorrowing FOREIGN KEY(user_id) REFERENCES Users(ID),
-	CONSTRAINT FK_BookBorrowing FOREIGN KEY(book_id) REFERENCES Books(ID)
+	PRIMARY KEY(id),
+	CONSTRAINT FK_UserIssue FOREIGN KEY(user_id) REFERENCES Users(id),
+	CONSTRAINT FK_BookIssue FOREIGN KEY(book_id) REFERENCES Books(id)
+);
+
+CREATE TABLE Returns(
+	id INT NOT NULL AUTO_INCREMENT,
+	user_id INT NOT NULL,
+	book_id INT NOT NULL,
+	issue_date DATE NOT NULL,
+	return_date DATE NOT NULL,
+	PRIMARY KEY(id),
+	CONSTRAINT FK_UserReturn FOREIGN KEY(user_id) REFERENCES Users(id),
+	CONSTRAINT FK_BookReturn FOREIGN KEY(book_id) REFERENCES Books(id)
 );

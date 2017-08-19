@@ -20,4 +20,10 @@ public class IssueExceptionHandler {
 	public String issueNotFoundException(HttpServletRequest rq, Exception e) {
 		return e.getMessage();
 	}
+	
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(BookNotIssuedException.class)
+	public String bookNotIssuedException(Exception e) {
+		return e.getMessage();
+	}
 }

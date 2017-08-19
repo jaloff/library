@@ -7,7 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -22,8 +21,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor(access=AccessLevel.PRIVATE)
 @Entity
-@Table(name="Issues")
-public class Issue {
+@Table(name="Returns")
+public class Return {
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -34,10 +33,14 @@ public class Issue {
 	private User user;
 	
 	@NotNull
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name="book_id")
 	private Book book;
 	
 	@NotNull
 	private Date issueDate;
+	
+	@NotNull
+	private Date returnDate;
+
 }

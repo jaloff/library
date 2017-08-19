@@ -2,11 +2,8 @@ package jaloff.library.controllers;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,9 +15,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import jaloff.library.entities.Issue;
-import jaloff.library.entities.Role;
+import jaloff.library.entities.Return;
 import jaloff.library.entities.User;
 import jaloff.library.services.UserService;
+import jaloff.library.utils.SecurityUtils;
 
 @RestController
 @RequestMapping("/users")
@@ -56,12 +54,16 @@ public class UserController {
 	}
 	
 	@GetMapping("/{id}/issues")
-	public List<Issue> getUserIssues(@PathVariable long id, HttpServletRequest request) {
+	public List<Issue> getUserIssues(@PathVariable long id) {
 		User user = userService.get(id);
-		String email = request.getUserPrincipal().getName();
-		if(request.isUserInRole(Role.ROLE_ADMIN.toString()) || user.getEmail().compareTo(email) == 0) {  
-			return user.getBorrowings();
-		}
-		throw new AccessDeniedException("");
+		SecurityUtils.isAdminOrOwner(user);
+		return user.getIssues();
+	}
+	
+	@GetMapping("/{id}/returns")
+	public List<Return> getUserReturns(@PathVariable long id) {
+		User user = userService.get(id);
+		SecurityUtils.isAdminOrOwner(user);
+		return user.getReturns();
 	}
 }

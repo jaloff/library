@@ -7,11 +7,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class IssueBookRequestDto {
-	
-	@NotNull
-	private Long userId;
-	
+public class ReturnBookRequestDto {
+
 	@NotNull
 	private Long bookId;
 }

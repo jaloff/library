@@ -3,9 +3,9 @@ package jaloff.library.entities;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -45,10 +45,13 @@ public class User {
 	private String role;
 	
 	@JsonIgnore
-	@OneToMany
-	@JoinColumn(name="userId")
-	private List<Issue> borrowings;
+	@OneToMany(mappedBy="user", fetch=FetchType.LAZY)
+	private List<Issue> issues;
 
+	@JsonIgnore
+	@OneToMany(mappedBy="user", fetch=FetchType.LAZY)
+	private List<Return> returns;
+	
 	public User(Long id, String firstName, String lastName, String email, String password) {
 		this.id = id;
 		this.firstName = firstName;
