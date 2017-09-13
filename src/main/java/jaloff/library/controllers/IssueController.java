@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import jaloff.library.dto.IssueBookRequestDto;
+import jaloff.library.dto.requests.IssueBookRequest;
 import jaloff.library.entities.Issue;
 import jaloff.library.services.IssueService;
 
@@ -30,7 +30,7 @@ public class IssueController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-	public void issueBook(@RequestBody IssueBookRequestDto dto) {
+	public void issueBook(@RequestBody IssueBookRequest dto) {
 		issueService.issueBook(dto.getUserId(), dto.getBookId());
 	}
 	

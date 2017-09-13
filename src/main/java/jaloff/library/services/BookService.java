@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jaloff.library.dto.requests.CreateBookRequest;
 import jaloff.library.entities.Book;
 import jaloff.library.exceptions.BookNotFoundException;
+import jaloff.library.exceptions.ReadOnlyPropertyChangedException;
 import jaloff.library.repositories.BookRepository;
 
 @Service
@@ -23,10 +25,11 @@ public class BookService {
 		return bookRepository.findAll();
 	}
 	
-	public Book create(Book book) {
-		if(book.getId() != null) {
-			book.setId(null);
-		}
+	public Book create(CreateBookRequest dto) {
+		Book book = Book.builder()
+				.title(dto.getTitle())
+				.status(Book.Status.AVAIABLE)
+				.build();
 		
 		return bookRepository.save(book);
 	}
@@ -39,11 +42,15 @@ public class BookService {
 		}
 	}
 	
-	public void update(Book book) {
-		if(bookRepository.exists(book.getId())) {
-			bookRepository.delete(book);
-		} else {
-			throw new BookNotFoundException(book.getId());
+	public Book update(Book updatedBook) {
+		Book book = this.get(updatedBook.getId());
+		
+		if(updatedBook.getStatus() == null) {
+			updatedBook.setStatus(book.getStatus());
+		}else if(updatedBook.getStatus() != book.getStatus()) {
+			throw new ReadOnlyPropertyChangedException("status", book.getStatus().toString(), updatedBook.getStatus().toString());
 		}
+		
+		return bookRepository.save(updatedBook);
 	}
 }

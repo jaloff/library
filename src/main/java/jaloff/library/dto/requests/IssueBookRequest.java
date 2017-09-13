@@ -1,4 +1,4 @@
-package jaloff.library.dto;
+package jaloff.library.dto.requests;
 
 import javax.validation.constraints.NotNull;
 
@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class IssueBookRequestDto {
+public class IssueBookRequest {
 	
 	@NotNull
 	private Long userId;

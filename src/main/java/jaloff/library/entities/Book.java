@@ -15,11 +15,15 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name="Books")
 public class Book {
@@ -31,7 +35,6 @@ public class Book {
 	@NotBlank
 	private String title;
 	
-	@NotNull
 	private Status status;
 	
 	@JsonIgnore

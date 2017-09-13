@@ -3,6 +3,8 @@ package jaloff.library.controllers;
 import java.util.Collection;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jaloff.library.dto.requests.CreateBookRequest;
 import jaloff.library.entities.Book;
 import jaloff.library.entities.Return;
 import jaloff.library.services.BookService;
@@ -40,13 +43,14 @@ public class BookController {
 	}
 	
 	@PostMapping
-	public Book createBook(@RequestBody Book book) {
-		return bookService.create(book);
+	public Book createBook(@RequestBody @Valid CreateBookRequest dto) {
+		return bookService.create(dto);
 	}
 	
-	@PutMapping
-	public void updateBook(@RequestBody Book book) {
-		bookService.update(book);
+	@PutMapping("/{id}")
+	public Book updateBook(@PathVariable long id, @RequestBody @Valid Book book) {
+		book.setId(id);
+		return bookService.update(book);
 	}
 	
 	@GetMapping("/{id}/returns")

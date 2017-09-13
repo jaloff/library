@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jaloff.library.dto.ReturnBookRequestDto;
+import jaloff.library.dto.requests.ReturnBookRequest;
 import jaloff.library.entities.Return;
 import jaloff.library.services.ReturnService;
 
@@ -26,7 +26,7 @@ public class ReturnController {
 	}
 	
 	@PostMapping
-	public Return returnBook(@RequestBody ReturnBookRequestDto dto) {
+	public Return returnBook(@RequestBody ReturnBookRequest dto) {
 		return returnService.returnBook(dto.getBookId());
 	}
 }
