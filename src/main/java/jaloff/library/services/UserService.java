@@ -4,7 +4,9 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import jaloff.library.entities.Role;
@@ -22,6 +24,9 @@ public class UserService {
 	
 	@Autowired
 	private PasswordGenerator passwordGenerator;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	public User get(long id) {
 		return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
@@ -31,7 +36,7 @@ public class UserService {
 		return userRepository.findAll();
 	}
 
-	// TODO Encode password and send email
+	// TODO send email
 	public User create(User user) {
 		if(userRepository.existsByEmail(user.getEmail())) {
 			throw new UserWithEmailExistException(user.getEmail());
@@ -41,7 +46,8 @@ public class UserService {
 			user.setId(null);
 		}
 		
-		user.setPassword(passwordGenerator.generate());
+		String password = passwordGenerator.generate(); 
+		user.setPassword(passwordEncoder.encode(password));
 		user.setRole(Role.ROLE_USER.toString());
 		
 		return userRepository.save(user);
@@ -72,15 +78,14 @@ public class UserService {
 		return userRepository.save(user);
 	}
 	
-	// TODO Encode password
 	public void changePassword(String passwordOld, String passwordNew) {
 		Principal principal = SecurityContextHolder.getContext().getAuthentication();
 		User user = userRepository.findByEmail(principal.getName()).get();
-		if(user.getPassword().compareTo(passwordOld) == 0) {
-			user.setPassword(passwordNew);
+		if(passwordEncoder.matches(passwordOld, user.getPassword())) {
+			user.setPassword(passwordEncoder.encode(passwordNew));
 			userRepository.save(user);
 		} else {
-			// TODO Throw exception
+			throw new BadCredentialsException("Wrong password");
 		}
 	}
 }

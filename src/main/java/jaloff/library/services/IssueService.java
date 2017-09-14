@@ -16,7 +16,7 @@ import jaloff.library.utils.DateUtils;
 @Service
 public class IssueService {
 	
-	public static final int MAX_ISSUES = 1;
+	public static final int MAX_ISSUES = 10;
 
 	@Autowired
 	private IssueRepository issueRepository;
