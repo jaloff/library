@@ -45,6 +45,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.authorizeRequests()
 				.antMatchers(HttpMethod.GET, "/users/*/issues", "/users/*/returns")
 				.authenticated()
+				.antMatchers(HttpMethod.POST, "/users/*/password")
+				.authenticated()
 			.and()
 				.authorizeRequests()
 				.antMatchers(HttpMethod.GET, "/books", "/books/*")

@@ -1,9 +1,11 @@
 package jaloff.library.controllers;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import jaloff.library.dto.requests.ChangePasswordRequest;
 import jaloff.library.entities.Issue;
 import jaloff.library.entities.Return;
 import jaloff.library.entities.User;
@@ -66,5 +69,14 @@ public class UserController {
 		User user = userService.get(id);
 		SecurityUtils.isAdminOrOwner(user);
 		return user.getReturns();
+	}
+	
+	@PostMapping("/{id}/password")
+	public void changePassword(@PathVariable long id, Principal principal, @RequestBody ChangePasswordRequest request) {
+		User user = userService.get(id);
+		if(principal.getName().compareTo(user.getEmail()) != 0) {
+			throw new AccessDeniedException("");
+		}
+		userService.changePassword(request);
 	}
 }

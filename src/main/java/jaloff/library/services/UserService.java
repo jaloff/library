@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import jaloff.library.dto.requests.ChangePasswordRequest;
 import jaloff.library.entities.Role;
 import jaloff.library.entities.User;
 import jaloff.library.exceptions.ReadOnlyPropertyChangedException;
@@ -78,11 +79,11 @@ public class UserService {
 		return userRepository.save(user);
 	}
 	
-	public void changePassword(String passwordOld, String passwordNew) {
+	public void changePassword(ChangePasswordRequest request) {
 		Principal principal = SecurityContextHolder.getContext().getAuthentication();
 		User user = userRepository.findByEmail(principal.getName()).get();
-		if(passwordEncoder.matches(passwordOld, user.getPassword())) {
-			user.setPassword(passwordEncoder.encode(passwordNew));
+		if(passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+			user.setPassword(passwordEncoder.encode(request.getNewPassword()));
 			userRepository.save(user);
 		} else {
 			throw new BadCredentialsException("Wrong password");
