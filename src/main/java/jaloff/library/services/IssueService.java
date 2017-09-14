@@ -9,11 +9,14 @@ import jaloff.library.entities.Book;
 import jaloff.library.entities.Issue;
 import jaloff.library.entities.User;
 import jaloff.library.exceptions.BookAlreadyIssuedException;
+import jaloff.library.exceptions.MaximumIssuesReachedException;
 import jaloff.library.repositories.IssueRepository;
 import jaloff.library.utils.DateUtils;
 
 @Service
 public class IssueService {
+	
+	public static final int MAX_ISSUES = 1;
 
 	@Autowired
 	private IssueRepository issueRepository;
@@ -31,6 +34,10 @@ public class IssueService {
 	public void issueBook(Long userId, Long bookId) {
 		Book book = bookService.get(bookId);
 		User user = userService.get(userId);
+		
+		if(user.getIssues().size() >= MAX_ISSUES) {
+			throw new MaximumIssuesReachedException(MAX_ISSUES);
+		}
 		
 		if(book.getStatus() == Book.Status.BORROWED) {
 			throw new BookAlreadyIssuedException(bookId);

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import jaloff.library.entities.Role;
 import jaloff.library.entities.User;
+import jaloff.library.exceptions.ReadOnlyPropertyChangedException;
 import jaloff.library.exceptions.UserNotFoundException;
 import jaloff.library.exceptions.UserWithEmailExistException;
 import jaloff.library.repositories.UserRepository;
@@ -54,12 +55,21 @@ public class UserService {
 		}
 	}
 
-	public void update(User user) {
-		if(userRepository.exists(user.getId())) {
-			userRepository.save(user);
-		} else {
-			throw new UserNotFoundException(user.getId());
+	public User update(User updatedUser) {
+		User user = this.get(updatedUser.getId());
+		
+		if(updatedUser.getRole() == null) {
+			updatedUser.setRole(user.getRole());
+		} else if(updatedUser.getRole().compareTo(user.getRole()) != 0) {
+			throw new ReadOnlyPropertyChangedException("role", user.getRole(), updatedUser.getRole());
 		}
+		
+		user.setFirstName(updatedUser.getFirstName());
+		user.setLastName(updatedUser.getLastName());
+		user.setEmail(updatedUser.getEmail());
+		
+		
+		return userRepository.save(user);
 	}
 	
 	// TODO Encode password

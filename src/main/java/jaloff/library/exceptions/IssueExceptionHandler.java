@@ -26,4 +26,10 @@ public class IssueExceptionHandler {
 	public String bookNotIssuedException(Exception e) {
 		return e.getMessage();
 	}
+	
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	@ExceptionHandler(MaximumIssuesReachedException.class)
+	public String maximumIssuesReachedException(Exception e) {
+		return e.getMessage();
+	}
 }

@@ -41,7 +41,6 @@ public class User {
 	@JsonIgnore
 	private String password;
 	
-	@JsonIgnore
 	private String role;
 	
 	@JsonIgnore
